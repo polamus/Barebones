@@ -1,12 +1,16 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
+  #before_action :require_user, only: [:home, :edit, :create, :update, :destroy]
+  #before_action :require_same_user, only: [:edit, :update, :destroy]
 
   # GET /posts
   # GET /posts.json
-  def home 
+  def home
+    redirect_to posts_path if logged_in?
   end
+
   def index
-    @posts = Post.all
+    @posts = Post.paginate(page:params[:page], per_page: 5)
   end
 
   # GET /posts/1
@@ -73,4 +77,12 @@ class PostsController < ApplicationController
     def post_params
       params.require(:post).permit(:title, :description)
     end
+
+   # def require_same_user
+    #  if current_user != @article.user
+     #   flash[:danger] = "You can only edit or delete your own articles"
+      #  redirect_to root_path
+      #end
+    #end
+
 end
